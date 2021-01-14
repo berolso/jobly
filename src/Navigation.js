@@ -1,38 +1,48 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import {
   Collapse,
   Navbar,
   NavbarToggler,
   NavbarBrand,
   Nav,
-  NavItem,
   NavLink,
+  NavItem,
+  Badge,
 } from "reactstrap";
+import { NavLink as RRNavLink } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 
-export const Navigation = (props) => {
+export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const cart = useSelector((state) => state.cart);
+  const totalItems = Object.values(cart).reduce((acc, cur) => +acc + +cur, 0);
 
   const toggle = () => setIsOpen(!isOpen);
 
   return (
-    <div>
-      <Navbar color="dark" dark expand="md">
-        <NavbarBrand href="/">Shoply</NavbarBrand>
+    <>
+      <Navbar color="dark" dark expand="md" sticky="top">
+        <NavbarBrand tag={RRNavLink} exact to="/">
+          Shoply
+        </NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
-              <NavLink href="/items/">Items</NavLink>
+              <NavLink tag={RRNavLink} exact to="/products/">
+                Products
+              </NavLink>
             </NavItem>
           </Nav>
         </Collapse>
         <Nav className="ml-auto" navbar>
-          <NavLink href="/cart">
+          <NavLink tag={RRNavLink} exact to="/cart">
+            <Badge color="success">{totalItems || ""}</Badge>
             <FaShoppingCart />
           </NavLink>
         </Nav>
       </Navbar>
-    </div>
+    </>
   );
 };
